@@ -1358,6 +1358,12 @@
           "shape":"RequestPayer",
           "location":"header",
           "locationName":"x-amz-request-payer"
+        },
+        "Metadata":{
+          "shape":"Metadata",
+          "documentation":"A map of metadata to store with the object in S3.",
+          "location":"headers",
+          "locationName":"x-amz-meta-"
         }
       },
       "payload":"MultipartUpload"

@@ -95,7 +95,7 @@ def check_for_200_error(response, **kwargs):
 
 
 def _looks_like_special_case_error(http_response):
-    if http_response.status_code == 200:
+    if http_response.status_code == 200 and 'x-amz-meta-callback' not in http_response.request.headers._store:
         parser = xml.etree.cElementTree.XMLParser(
             target=xml.etree.cElementTree.TreeBuilder(),
             encoding='utf-8')

@@ -68,7 +68,7 @@ def convert_to_response_dict(http_response, operation_model):
         'headers': http_response.headers,
         'status_code': http_response.status_code,
     }
-    if response_dict['status_code'] >= 300:
+    if response_dict['status_code'] >= 300 or (response_dict['status_code'] == 203 and 'callback' in operation_model.metadata and operation_model.metadata['callback']):
         response_dict['body'] = http_response.content
     elif operation_model.has_streaming_output:
         response_dict['body'] = StreamingBody(
@@ -242,7 +242,11 @@ class Endpoint(object):
             operation_model.has_streaming_output
         history_recorder.record('HTTP_RESPONSE', http_response_record_dict)
 
-        parser = self._response_parser_factory.create_parser(
+        if http_response.status_code == 200 and 'callback' in operation_model.metadata:
+            parser = self._response_parser_factory.create_parser("rest-json")
+            operation_model.metadata['protocol'] = "rest-json"
+        else:
+            parser = self._response_parser_factory.create_parser(
             operation_model.metadata['protocol'])
         parsed_response = parser.parse(
             response_dict, operation_model.output_shape)

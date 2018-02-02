@@ -570,6 +570,8 @@ class BaseClient(object):
 
     def _make_api_call(self, operation_name, api_params):
         operation_model = self._service_model.operation_model(operation_name)
+        if 'Metadata' in api_params and 'callback' in api_params['Metadata']:
+            operation_model.metadata['callback'] = True
         service_name = self._service_model.service_name
         history_recorder.record('API_CALL', {
             'service': service_name,
@@ -609,7 +611,7 @@ class BaseClient(object):
             model=operation_model, context=request_context
         )
 
-        if http.status_code >= 300:
+        if http.status_code >= 300 or (http.status_code == 203 and operation_model.metadata['callback']):
             error_code = parsed_response.get("Error", {}).get("Code")
             error_class = self.exceptions.from_code(error_code)
             raise error_class(parsed_response, operation_name)
