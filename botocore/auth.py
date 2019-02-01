@@ -160,7 +160,10 @@ class SigV4Auth(BaseSigner):
         # valid values.  But these will get overriden in ``add_auth``
         # later for real requests.
         self._region_name = region_name
-        self._service_name = service_name
+        if service_name == 'sts':
+          self._service_name = 's3'
+        else:
+          self._service_name = service_name
 
     def _sign(self, key, msg, hex=False):
         if hex:
@@ -386,6 +389,8 @@ class SigV4Auth(BaseSigner):
             if 'X-Amz-Content-SHA256' in request.headers:
                 del request.headers['X-Amz-Content-SHA256']
             request.headers['X-Amz-Content-SHA256'] = UNSIGNED_PAYLOAD
+        else:
+            request.headers['X-Amz-Content-SHA256'] = self.payload(request)
 
     def _set_necessary_date_headers(self, request):
         # The spec allows for either the Date _or_ the X-Amz-Date value to be
