@@ -451,6 +451,16 @@
       "documentationUrl":"http://docs.amazonwebservices.com/AmazonS3/latest/API/RESTObjectGETacl.html",
       "documentation":"Returns the access control list (ACL) of an object."
     },
+    "GetObjectSymlink":{
+      "name":"GetObjectSymlink",
+      "http":{
+        "method":"GET",
+        "requestUri":"/{Bucket}/{Key+}?symlink"
+      },
+      "input":{"shape":"GetObjectRequest"},
+      "output":{"shape":"GetObjectOutput"},
+      "documentation":"Returns the soft link information of an object."
+    },
     "GetObjectTagging":{
       "name":"GetObjectTagging",
       "http":{
@@ -800,6 +810,16 @@
       ],
       "documentationUrl":"http://docs.amazonwebservices.com/AmazonS3/latest/API/RESTObjectPUTacl.html",
       "documentation":"uses the acl subresource to set the access control list (ACL) permissions for an object that already exists in a bucket"
+    },
+    "PutObjectSymlink":{
+      "name":"PutObjectSymlink",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/{Bucket}/{Key+}?symlink"
+      },
+      "input":{"shape":"PutObjectSymlinkRequest"},
+      "output":{"shape":"PutObjectOutput"},
+      "documentation":"sets soft link for an object."
     },
     "PutObjectTagging":{
       "name":"PutObjectTagging",
@@ -5551,6 +5571,34 @@
         }
       },
       "payload":"AccessControlPolicy"
+    },
+    "PutObjectSymlinkRequest":{
+      "type":"structure",
+      "required":[
+        "Bucket",
+        "Key",
+        "Metadata"
+      ],
+      "members":{
+        "Bucket":{
+          "shape":"BucketName",
+          "documentation":"Name of the bucket to which the PUT operation was initiated.",
+          "location":"uri",
+          "locationName":"Bucket"
+        },
+        "Key":{
+          "shape":"ObjectKey",
+          "documentation":"Object key for which the PUT operation was initiated.",
+          "location":"uri",
+          "locationName":"Key"
+        },
+        "Metadata":{
+          "shape":"Metadata",
+          "documentation":"Soft link metadata to store with the object in S3.",
+          "location":"headers",
+          "locationName":"x-amz-meta-"
+        }
+      }
     },
     "PutObjectOutput":{
       "type":"structure",
